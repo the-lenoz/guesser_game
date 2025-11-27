@@ -6,7 +6,7 @@
 
 typedef enum {GUESSING_L, GUESSING_R, GUESSED, WRONG, NOT_FOUND} guesserStatus;
 
-tree *read_guesser_data(const char *data_path) {
+static tree *read_guesser_data(const char *data_path) {
   FILE *fp = fopen(data_path, "r");
   if (fp == NULL)
     return NULL;
@@ -15,7 +15,7 @@ tree *read_guesser_data(const char *data_path) {
   return t;
 }
 
-int write_guesser_data(tree *data, const char *path) {
+static int write_guesser_data(tree *data, const char *path) {
   FILE *fp = fopen(path, "w");
 
   if (fp == NULL)
@@ -28,7 +28,7 @@ int write_guesser_data(tree *data, const char *path) {
   return 0;  
 }    
 
-guesserStatus guess(tree *guesser_tree) {
+static guesserStatus guess(tree *guesser_tree) {
   if (!guesser_tree) {
     return NOT_FOUND;
   }
@@ -57,7 +57,7 @@ guesserStatus guess(tree *guesser_tree) {
   return status;
 }
 
-int add_new_ch(tree **ptr) {
+static int add_new_character(tree **ptr) {
   if (!ptr || *ptr) return -1; 
 
   puts("Who is it?");
@@ -77,7 +77,7 @@ int add_new_ch(tree **ptr) {
   return 0;
 }
 
-int add_new_ch_update(tree **conflicted) {
+static int add_new_character_update(tree **conflicted) {
   if (!conflicted || !*conflicted)
     return -1;
 
@@ -97,7 +97,7 @@ int add_new_ch_update(tree **conflicted) {
 
   *conflicted = diff;
   
-  return add_new_ch(&(*conflicted)->rchild);
+  return add_new_character(&(*conflicted)->rchild);
 }
 
 int run_guesser_game(const char *guesser_database_path) {
@@ -112,13 +112,13 @@ int run_guesser_game(const char *guesser_database_path) {
     switch (status) {
     case NOT_FOUND:
       puts("Hm... I don't know!");
-      if (add_new_ch(current_guesser_data) == 0)
+      if (add_new_character(current_guesser_data) == 0)
         puts("Now I know a bit more!");
       else fprintf(stderr, "An error occured!\n");
       break;
     case WRONG:
       puts("I'm sorry, my bad.");
-      add_new_ch_update(current_guesser_data);
+      add_new_character_update(current_guesser_data);
       puts("Now I know a bit more!");      
       break;
     case GUESSED:
